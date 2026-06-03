@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { ContactForm } from '../components/contacts/ContactForm';
 import { ContactList } from '../components/contacts/ContactList';
+import { ContactDetailModal } from '../components/contacts/ContactDetailModal';
 import { Header } from '../components/layout/Header';
 import { VariantSelector } from '../components/layout/VariantSelector';
 import { useContacts } from '../hooks/useContacts';
@@ -8,12 +10,18 @@ import { useViewVariant } from '../hooks/useViewVariant';
 export function ContactsPage() {
   const { contacts, addContact, removeContact } = useContacts();
   const { variant } = useViewVariant();
+  const [selectedContact, setSelectedContact] = useState(null);
+
+  const deleteContact = (id) => {
+    removeContact(id);
+    if (selectedContact?.id === id) setSelectedContact(null);
+  };
 
   const handleDelete = (id) => {
     const name = contacts.find((c) => c.id === id);
     const label = name ? `${name.nombre} ${name.apellido}` : 'este contacto';
     if (window.confirm(`¿Eliminar a ${label}?`)) {
-      removeContact(id);
+      deleteContact(id);
     }
   };
 
@@ -31,13 +39,24 @@ export function ContactsPage() {
 
         <div className="contacts-layout">
           <section className="contacts-layout__list" aria-label="Lista de contactos">
-            <ContactList contacts={contacts} onDelete={handleDelete} variant={variant} />
+            <ContactList
+              contacts={contacts}
+              onSelect={setSelectedContact}
+              onDelete={handleDelete}
+              variant={variant}
+            />
           </section>
           <section className="contacts-layout__form" aria-label="Formulario de contacto">
             <ContactForm onSubmit={addContact} />
           </section>
         </div>
       </main>
+
+      <ContactDetailModal
+        contact={selectedContact}
+        onClose={() => setSelectedContact(null)}
+        onDelete={deleteContact}
+      />
     </>
   );
 }

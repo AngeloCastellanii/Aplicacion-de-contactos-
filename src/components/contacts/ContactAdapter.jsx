@@ -16,13 +16,14 @@ const VARIANT_MAP = {
 
 export const VIEW_VARIANTS = Object.keys(VARIANT_MAP);
 
-export function ContactAdapter({ contact, variant, onDelete }) {
+export function ContactAdapter({ contact, variant, onSelect, onDelete }) {
   const Component = VARIANT_MAP[variant] ?? ContactCardList;
-  return <Component contact={contact} onDelete={onDelete} />;
+  return <Component contact={contact} onSelect={onSelect} onDelete={onDelete} />;
 }
 
 ContactAdapter.propTypes = {
   contact: contactShape.isRequired,
   variant: PropTypes.oneOf(VIEW_VARIANTS).isRequired,
+  onSelect: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
 };

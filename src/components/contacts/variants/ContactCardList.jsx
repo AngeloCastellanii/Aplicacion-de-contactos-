@@ -2,14 +2,15 @@ import PropTypes from 'prop-types';
 import { contactShape } from '../../../models/contactPropTypes';
 import { ContactPhoto } from '../ContactPhoto';
 import { ContactCardActions } from '../ContactCardActions';
+import { ContactCardShell } from '../ContactCardShell';
 
-export function ContactCardList({ contact, onDelete }) {
+export function ContactCardList({ contact, onSelect, onDelete }) {
   const fullName = `${contact.nombre} ${contact.apellido}`;
   const mainNickname = contact.apodos?.[0];
 
   return (
-    <article className="contact-card contact-card--list">
-      <ContactPhoto alt={fullName} size="md" />
+    <ContactCardShell contact={contact} onSelect={onSelect} className="contact-card contact-card--list">
+      <ContactPhoto src={contact.foto} alt={fullName} size="md" />
       <div className="contact-card__body">
         <h3 className="contact-card__name">{fullName}</h3>
         {mainNickname && <p className="contact-card__nickname">{mainNickname}</p>}
@@ -26,11 +27,12 @@ export function ContactCardList({ contact, onDelete }) {
         )}
       </div>
       <ContactCardActions contactId={contact.id} onDelete={onDelete} />
-    </article>
+    </ContactCardShell>
   );
 }
 
 ContactCardList.propTypes = {
   contact: contactShape.isRequired,
+  onSelect: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
 };
