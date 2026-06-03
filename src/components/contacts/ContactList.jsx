@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import { contactShape } from '../../models/contactPropTypes';
-import { ContactCardList } from './ContactCardList';
+import { ContactAdapter, VIEW_VARIANTS } from './ContactAdapter';
 
-export function ContactList({ contacts, onDelete }) {
+export function ContactList({ contacts, onDelete, variant }) {
   if (contacts.length === 0) {
     return (
       <div className="empty-state card">
@@ -12,11 +12,14 @@ export function ContactList({ contacts, onDelete }) {
     );
   }
 
+  const listClass =
+    variant === 'grid' ? 'contact-list contact-list--grid' : 'contact-list';
+
   return (
-    <ul className="contact-list">
+    <ul className={listClass}>
       {contacts.map((contact) => (
         <li key={contact.id}>
-          <ContactCardList contact={contact} onDelete={onDelete} />
+          <ContactAdapter contact={contact} variant={variant} onDelete={onDelete} />
         </li>
       ))}
     </ul>
@@ -26,4 +29,5 @@ export function ContactList({ contacts, onDelete }) {
 ContactList.propTypes = {
   contacts: PropTypes.arrayOf(contactShape).isRequired,
   onDelete: PropTypes.func.isRequired,
+  variant: PropTypes.oneOf(VIEW_VARIANTS).isRequired,
 };

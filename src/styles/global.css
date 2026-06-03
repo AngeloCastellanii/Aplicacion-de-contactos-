@@ -89,6 +89,11 @@ a {
 }
 
 .page-toolbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
   margin-bottom: 1.5rem;
 }
 
@@ -122,6 +127,123 @@ a {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+}
+
+.contact-list--grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.contact-card--compact {
+  align-items: center;
+  padding: 0.65rem 1rem;
+}
+
+.contact-card--compact .contact-card__name {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.contact-card--compact .contact-card__phone {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  font-weight: 500;
+}
+
+.contact-card--grid {
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1.25rem 1rem;
+}
+
+.contact-card--grid .contact-card__name {
+  margin: 0.75rem 0 0.15rem;
+  font-size: 1rem;
+}
+
+.contact-card--grid .contact-card__nickname {
+  margin: 0 0 0.25rem;
+}
+
+.contact-card--grid .contact-card__phone {
+  margin: 0 0 0.75rem;
+  font-size: 0.9rem;
+}
+
+.contact-card--grid .contact-card__actions {
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+}
+
+.contact-card--minimal {
+  align-items: center;
+  padding: 0.75rem 1rem;
+}
+
+.contact-card--minimal .contact-card__name {
+  flex: 1;
+  margin: 0;
+  font-size: 1rem;
+}
+
+.contact-initials {
+  width: var(--photo-sm);
+  height: var(--photo-sm);
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: white;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.contact-card--detailed {
+  align-items: flex-start;
+}
+
+.contact-card--detailed .contact-card__notes--full {
+  -webkit-line-clamp: 4;
+}
+
+.variant-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.variant-selector__label {
+  font-size: 0.8rem;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.variant-selector__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.variant-selector__btn {
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-muted);
+  border-radius: 8px;
+  padding: 0.4rem 0.75rem;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.variant-selector__btn.is-active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
 }
 
 .contact-card {
