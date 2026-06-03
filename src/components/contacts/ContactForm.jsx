@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { contactShape } from '../../models/contactPropTypes';
 import { ApodosInput } from './ApodosInput';
 
-const initialState = {
+const emptyForm = {
   numero: '',
   nombre: '',
   apellido: '',
@@ -10,8 +12,27 @@ const initialState = {
   apodos: [],
 };
 
-export function ContactForm({ onSubmit }) {
-  const [form, setForm] = useState(initialState);
+function toFormValues(contact) {
+  return {
+    numero: contact.numero,
+    nombre: contact.nombre,
+    apellido: contact.apellido,
+    notas: contact.notas ?? '',
+    apodos: contact.apodos ?? [],
+  };
+}
+
+export function ContactForm({
+  onSubmit,
+  initialValues = null,
+  title = 'Nuevo contacto',
+  submitLabel = 'Guardar contacto',
+  cancelTo = null,
+}) {
+  const isEdit = Boolean(initialValues);
+  const [form, setForm] = useState(() =>
+    initialValues ? toFormValues(initialValues) : emptyForm,
+  );
   const [errors, setErrors] = useState({});
 
   const validate = () => {
@@ -38,13 +59,15 @@ export function ContactForm({ onSubmit }) {
     e.preventDefault();
     if (!validate()) return;
     onSubmit(form);
-    setForm(initialState);
-    setErrors({});
+    if (!isEdit) {
+      setForm(emptyForm);
+      setErrors({});
+    }
   };
 
   return (
     <form className="contact-form card" onSubmit={handleSubmit} noValidate>
-      <h2>Nuevo contacto</h2>
+      <h2>{title}</h2>
 
       <label className="field">
         <span>Número</span>
@@ -99,13 +122,23 @@ export function ContactForm({ onSubmit }) {
         {errors.notas && <span className="field-error">{errors.notas}</span>}
       </label>
 
-      <button type="submit" className="btn btn--primary">
-        Guardar contacto
+      <button type="submit" className="btn btn--primary btn--block">
+        {submitLabel}
       </button>
+
+      {cancelTo && (
+        <Link to={cancelTo} className="btn btn--ghost btn--block contact-form__cancel">
+          Cancelar
+        </Link>
+      )}
     </form>
   );
 }
 
 ContactForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
+  initialValues: contactShape,
+  title: PropTypes.string,
+  submitLabel: PropTypes.string,
+  cancelTo: PropTypes.string,
 };

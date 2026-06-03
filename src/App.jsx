@@ -4,6 +4,7 @@ import { ContactsProvider } from './context/ContactsContext';
 import { ProtectedRoute } from './components/layout/ProtectedRoute';
 import { LoginPage } from './pages/LoginPage';
 import { ContactsPage } from './pages/ContactsPage';
+import { ContactEditPage } from './pages/ContactEditPage';
 
 export default function App() {
   return (
@@ -17,6 +18,14 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <ContactsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/contactos/:id/editar"
+              element={
+                <ProtectedRoute>
+                  <ContactEditPage />
                 </ProtectedRoute>
               }
             />

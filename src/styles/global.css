@@ -30,6 +30,23 @@ a {
   padding: 1.5rem;
 }
 
+.page--narrow {
+  max-width: 520px;
+}
+
+.contact-form__cancel {
+  margin-top: 0.75rem;
+  text-align: center;
+  display: inline-block;
+}
+
+.contact-card__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
 .page--center {
   display: grid;
   place-items: center;

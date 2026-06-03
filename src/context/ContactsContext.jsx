@@ -20,6 +20,15 @@ export function ContactsProvider({ children }) {
     [refresh],
   );
 
+  const updateContact = useCallback(
+    (id, payload) => {
+      const updated = contactsService.updateContact(id, payload);
+      if (updated) refresh();
+      return updated;
+    },
+    [refresh],
+  );
+
   const removeContact = useCallback(
     (id) => {
       const removed = contactsService.deleteContact(id);
@@ -33,10 +42,11 @@ export function ContactsProvider({ children }) {
     () => ({
       contacts,
       addContact,
+      updateContact,
       removeContact,
       refresh,
     }),
-    [contacts, addContact, removeContact, refresh],
+    [contacts, addContact, updateContact, removeContact, refresh],
   );
 
   return (

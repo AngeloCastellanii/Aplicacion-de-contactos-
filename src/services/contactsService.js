@@ -41,6 +41,30 @@ export function createContact(payload) {
   return contact;
 }
 
+export function getContactById(id) {
+  return readContacts().find((c) => c.id === id) ?? null;
+}
+
+export function updateContact(id, payload) {
+  const contacts = readContacts();
+  const index = contacts.findIndex((c) => c.id === id);
+  if (index === -1) return null;
+
+  const updated = {
+    ...contacts[index],
+    numero: payload.numero.trim(),
+    nombre: payload.nombre.trim(),
+    apellido: payload.apellido.trim(),
+    notas: payload.notas?.trim() ?? '',
+    apodos: payload.apodos ?? [],
+    actualizadoEn: new Date().toISOString(),
+  };
+
+  contacts[index] = updated;
+  writeContacts(contacts);
+  return updated;
+}
+
 export function deleteContact(id) {
   const contacts = readContacts();
   const next = contacts.filter((c) => c.id !== id);
