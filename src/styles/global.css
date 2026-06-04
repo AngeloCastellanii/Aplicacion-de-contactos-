@@ -107,6 +107,52 @@ a {
   color: var(--color-muted);
 }
 
+.list-toolbar {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.75rem 1rem;
+  align-items: end;
+  margin-bottom: 1rem;
+  padding: 1rem;
+}
+
+.list-toolbar__search {
+  grid-column: 1 / -1;
+  margin-bottom: 0;
+}
+
+.list-toolbar__sort {
+  margin-bottom: 0;
+  min-width: 160px;
+}
+
+.list-toolbar__sort select {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font: inherit;
+}
+
+.list-toolbar__meta {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.9rem;
+  align-self: center;
+}
+
+@media (max-width: 500px) {
+  .list-toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .list-toolbar__sort {
+    min-width: 0;
+  }
+}
+
 .contacts-layout {
   display: grid;
   grid-template-columns: 1fr 340px;
@@ -357,6 +403,32 @@ a {
   background: var(--color-bg);
   color: var(--color-text);
   font: inherit;
+}
+
+.field input:focus-visible,
+.field textarea:focus-visible,
+.btn:focus-visible,
+.variant-selector__btn:focus-visible,
+.contact-card--clickable:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.notice {
+  margin: 0.5rem 0 0;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.notice--success {
+  background: rgba(99, 102, 241, 0.15);
+  color: #c7d2fe;
+}
+
+.notice--error {
+  background: rgba(239, 68, 68, 0.15);
+  color: #fecaca;
 }
 
 .field-row {
