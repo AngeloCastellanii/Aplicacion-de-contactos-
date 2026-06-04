@@ -1,3 +1,4 @@
+import { convertToPixelCrop } from 'react-image-crop';
 import {
   JPEG_QUALITY,
   MAX_FILE_SIZE_BYTES,
@@ -28,15 +29,20 @@ function scaleDimensions(width, height, maxW, maxH) {
 }
 
 export function cropImageToDataUrl(image, crop) {
+  const displayCrop = convertToPixelCrop(crop, image.width, image.height);
   const scaleX = image.naturalWidth / image.width;
   const scaleY = image.naturalHeight / image.height;
 
   const pixelCrop = {
-    x: Math.round(crop.x * scaleX),
-    y: Math.round(crop.y * scaleY),
-    width: Math.round(crop.width * scaleX),
-    height: Math.round(crop.height * scaleY),
+    x: Math.round(displayCrop.x * scaleX),
+    y: Math.round(displayCrop.y * scaleY),
+    width: Math.round(displayCrop.width * scaleX),
+    height: Math.round(displayCrop.height * scaleY),
   };
+
+  if (pixelCrop.width <= 0 || pixelCrop.height <= 0) {
+    throw new Error('Área de recorte inválida.');
+  }
 
   const { width, height } = scaleDimensions(
     pixelCrop.width,
