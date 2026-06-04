@@ -12,7 +12,11 @@ function readContacts() {
 }
 
 function writeContacts(contacts) {
-  localStorage.setItem(STORAGE_KEYS.CONTACTS, JSON.stringify(contacts));
+  try {
+    localStorage.setItem(STORAGE_KEYS.CONTACTS, JSON.stringify(contacts));
+  } catch {
+    throw new Error('No hay espacio suficiente para guardar. Prueba con una imagen más pequeña.');
+  }
 }
 
 export function getAllContacts() {
@@ -28,7 +32,7 @@ export function createContact(payload) {
     numero: payload.numero.trim(),
     nombre: payload.nombre.trim(),
     apellido: payload.apellido.trim(),
-    foto: null,
+    foto: payload.foto ?? null,
     notas: payload.notas?.trim() ?? '',
     apodos: payload.apodos ?? [],
     creadoEn: now,
@@ -57,6 +61,7 @@ export function updateContact(id, payload) {
     apellido: payload.apellido.trim(),
     notas: payload.notas?.trim() ?? '',
     apodos: payload.apodos ?? [],
+    foto: payload.foto !== undefined ? payload.foto : contacts[index].foto,
     actualizadoEn: new Date().toISOString(),
   };
 

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { contactShape } from '../../models/contactPropTypes';
 import { ApodosInput } from './ApodosInput';
+import { ContactPhotoField } from './ContactPhotoField';
 
 const emptyForm = {
   numero: '',
@@ -10,6 +11,7 @@ const emptyForm = {
   apellido: '',
   notas: '',
   apodos: [],
+  foto: null,
 };
 
 function toFormValues(contact) {
@@ -19,6 +21,7 @@ function toFormValues(contact) {
     apellido: contact.apellido,
     notas: contact.notas ?? '',
     apodos: contact.apodos ?? [],
+    foto: contact.foto ?? null,
   };
 }
 
@@ -58,10 +61,14 @@ export function ContactForm({
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validate()) return;
-    onSubmit(form);
-    if (!isEdit) {
-      setForm(emptyForm);
-      setErrors({});
+    try {
+      onSubmit(form);
+      if (!isEdit) {
+        setForm(emptyForm);
+        setErrors({});
+      }
+    } catch (err) {
+      setErrors({ foto: err.message || 'Error al guardar.' });
     }
   };
 
@@ -104,6 +111,15 @@ export function ContactForm({
           {errors.apellido && <span className="field-error">{errors.apellido}</span>}
         </label>
       </div>
+
+      <ContactPhotoField
+        value={form.foto}
+        onChange={(foto) => {
+          setForm((p) => ({ ...p, foto }));
+          setErrors((prev) => ({ ...prev, foto: undefined }));
+        }}
+      />
+      {errors.foto && <span className="field-error">{errors.foto}</span>}
 
       <label className="field">
         <span>Apodos</span>

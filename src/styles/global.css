@@ -623,3 +623,55 @@ a {
   width: 100%;
   justify-content: flex-end;
 }
+
+.photo-field {
+  margin-bottom: 1rem;
+}
+
+.field-label {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--color-muted);
+  margin-bottom: 0.35rem;
+}
+
+.photo-field__preview {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0.75rem;
+}
+
+.photo-field__input {
+  width: 100%;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+}
+
+.photo-field__crop {
+  margin-top: 0.75rem;
+}
+
+.photo-field__crop img {
+  max-width: 100%;
+  display: block;
+}
+
+.photo-field__crop-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.photo-field__remove {
+  margin-top: 0.5rem;
+}
+
+.photo-field__hint {
+  margin: 0.35rem 0 0;
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+
+.ReactCrop {
+  max-width: 100%;
+}
