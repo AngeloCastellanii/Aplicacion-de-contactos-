@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ContactForm } from '../components/contacts/ContactForm';
+import { Link, useLocation } from 'react-router-dom';
 import { ContactList } from '../components/contacts/ContactList';
 import { ContactListToolbar } from '../components/contacts/ContactListToolbar';
 import { ContactDetailModal } from '../components/contacts/ContactDetailModal';
@@ -21,8 +21,9 @@ function readSortPreference() {
 }
 
 export function ContactsPage() {
-  const { contacts, addContact, removeContact } = useContacts();
+  const { contacts, removeContact } = useContacts();
   const { variant } = useViewVariant();
+  const location = useLocation();
   const [selectedContact, setSelectedContact] = useState(null);
   const [notice, setNotice] = useState('');
   const [query, setQuery] = useState('');
@@ -36,6 +37,13 @@ export function ContactsPage() {
   const hasActiveFilter = query.trim().length > 0;
 
   useEffect(() => {
+    if (location.state?.notice) {
+      setNotice(location.state.notice);
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
+
+  useEffect(() => {
     if (!notice) return undefined;
     const timer = setTimeout(() => setNotice(''), 3000);
     return () => clearTimeout(timer);
@@ -44,11 +52,6 @@ export function ContactsPage() {
   const handleSortChange = (value) => {
     setSortBy(value);
     localStorage.setItem(STORAGE_KEYS.CONTACT_SORT, value);
-  };
-
-  const handleAddContact = (form) => {
-    addContact(form);
-    setNotice('Contacto guardado correctamente.');
   };
 
   const deleteContact = (id) => {
@@ -68,37 +71,52 @@ export function ContactsPage() {
     <>
       <Header />
       <main className="page">
-        <div className="page-toolbar">
-          <div>
+        <section className="page-hero">
+          <div className="page-hero__content">
             <h1>Mis contactos</h1>
+            <p>Gestiona tu agenda personal. Haz clic en un contacto para ver el detalle.</p>
+            <div className="page-hero__stats">
+              <span className="stat-pill">
+                <strong>{contacts.length}</strong> guardados
+              </span>
+              {hasActiveFilter && (
+                <span className="stat-pill stat-pill--accent">
+                  <strong>{displayedContacts.length}</strong> resultados
+                </span>
+              )}
+            </div>
             <Notice message={notice} />
           </div>
+          <Link to="/contactos/nuevo" className="btn btn--primary btn--hero">
+            + Nuevo contacto
+          </Link>
+        </section>
+
+        <div className="page-toolbar">
           <VariantSelector />
         </div>
 
-        <div className="contacts-layout">
-          <section className="contacts-layout__list" aria-label="Lista de contactos">
-            <ContactListToolbar
-              query={query}
-              onQueryChange={setQuery}
-              sortBy={sortBy}
-              onSortChange={handleSortChange}
-              resultCount={displayedContacts.length}
-              totalCount={contacts.length}
-            />
-            <ContactList
-              contacts={displayedContacts}
-              totalCount={contacts.length}
-              hasActiveFilter={hasActiveFilter}
-              onSelect={setSelectedContact}
-              onDelete={handleDelete}
-              variant={variant}
-            />
-          </section>
-          <section className="contacts-layout__form" aria-label="Formulario de contacto">
-            <ContactForm onSubmit={handleAddContact} />
-          </section>
-        </div>
+        <ContactListToolbar
+          query={query}
+          onQueryChange={setQuery}
+          sortBy={sortBy}
+          onSortChange={handleSortChange}
+          resultCount={displayedContacts.length}
+          totalCount={contacts.length}
+        />
+
+        <ContactList
+          contacts={displayedContacts}
+          totalCount={contacts.length}
+          hasActiveFilter={hasActiveFilter}
+          onSelect={setSelectedContact}
+          onDelete={handleDelete}
+          variant={variant}
+        />
+
+        <Link to="/contactos/nuevo" className="fab" aria-label="Nuevo contacto">
+          +
+        </Link>
       </main>
 
       <ContactDetailModal

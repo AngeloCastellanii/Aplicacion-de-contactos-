@@ -16,15 +16,21 @@ export function ContactEditPage() {
 
   const handleSubmit = (form) => {
     const updated = updateContact(id, form);
-    if (updated) navigate('/contactos');
+    if (updated) {
+      navigate('/contactos', { state: { notice: 'Contacto actualizado.' } });
+    }
   };
 
   return (
     <>
       <Header />
-      <main className="page page--narrow">
+      <main className="page page--form">
+        <div className="page-hero page-hero--compact">
+          <h1>Editar contacto</h1>
+          <p>Modifica los datos de {contact.nombre} {contact.apellido}.</p>
+        </div>
         <ContactForm
-          title="Editar contacto"
+          title="Datos del contacto"
           submitLabel="Guardar cambios"
           initialValues={contact}
           cancelTo="/contactos"

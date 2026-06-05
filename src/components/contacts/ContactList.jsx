@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { contactShape } from '../../models/contactPropTypes';
 import { ContactAdapter, VIEW_VARIANTS } from './ContactAdapter';
@@ -5,11 +6,14 @@ import { ContactAdapter, VIEW_VARIANTS } from './ContactAdapter';
 export function ContactList({ contacts, onSelect, onDelete, variant, totalCount, hasActiveFilter }) {
   if (totalCount === 0) {
     return (
-      <div className="empty-state card">
-        <p>No hay contactos todavía.</p>
+      <div className="empty-state card empty-state--hero">
+        <p className="empty-state__title">Tu agenda está vacía</p>
         <p className="empty-state__hint">
-          Agrega el primero con el formulario. Luego haz clic en una tarjeta para ver el detalle.
+          Crea tu primer contacto y empieza a organizar tu red.
         </p>
+        <Link to="/contactos/nuevo" className="btn btn--primary">
+          + Crear contacto
+        </Link>
       </div>
     );
   }

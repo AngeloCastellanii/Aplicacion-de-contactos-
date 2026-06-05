@@ -6,6 +6,7 @@ import { ProtectedRoute } from './components/layout/ProtectedRoute';
 import { LoginPage } from './pages/LoginPage';
 import { ContactsPage } from './pages/ContactsPage';
 import { ContactEditPage } from './pages/ContactEditPage';
+import { ContactCreatePage } from './pages/ContactCreatePage';
 
 export default function App() {
   return (
@@ -20,6 +21,14 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <ContactsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/contactos/nuevo"
+              element={
+                <ProtectedRoute>
+                  <ContactCreatePage />
                 </ProtectedRoute>
               }
             />

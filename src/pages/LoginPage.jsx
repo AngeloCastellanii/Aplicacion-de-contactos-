@@ -11,7 +11,9 @@ export function LoginPage() {
 
   return (
     <main className="page page--center">
-      <LoginForm />
+      <div className="login-shell">
+        <LoginForm />
+      </div>
     </main>
   );
 }

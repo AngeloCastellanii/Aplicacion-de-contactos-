@@ -14,9 +14,13 @@ const emptyForm = {
   foto: null,
 };
 
+function sanitizeNumero(value) {
+  return value.replace(/\D/g, '');
+}
+
 function toFormValues(contact) {
   return {
-    numero: contact.numero,
+    numero: sanitizeNumero(contact.numero ?? ''),
     nombre: contact.nombre,
     apellido: contact.apellido,
     notas: contact.notas ?? '',
@@ -40,9 +44,11 @@ export function ContactForm({
 
   const validate = () => {
     const next = {};
-    if (!form.numero.trim()) next.numero = 'El número es obligatorio.';
-    else if (!/^[\d\s+()-]{6,20}$/.test(form.numero.trim())) {
-      next.numero = 'Ingresa un número válido.';
+    if (!form.numero) next.numero = 'El número es obligatorio.';
+    else if (!/^\d+$/.test(form.numero)) {
+      next.numero = 'El número debe contener solo dígitos y empezar con un número.';
+    } else if (form.numero.length < 6 || form.numero.length > 15) {
+      next.numero = 'El número debe tener entre 6 y 15 dígitos.';
     }
     if (!form.nombre.trim() || form.nombre.trim().length < 2) {
       next.nombre = 'El nombre debe tener al menos 2 caracteres.';
@@ -51,6 +57,11 @@ export function ContactForm({
     if (form.notas.length > 500) next.notas = 'Las notas no pueden superar 500 caracteres.';
     setErrors(next);
     return Object.keys(next).length === 0;
+  };
+
+  const handleNumeroChange = (e) => {
+    setForm((prev) => ({ ...prev, numero: sanitizeNumero(e.target.value) }));
+    setErrors((prev) => ({ ...prev, numero: undefined }));
   };
 
   const handleChange = (field) => (e) => {
@@ -79,11 +90,14 @@ export function ContactForm({
       <label className="field">
         <span>Número</span>
         <input
-          type="tel"
+          type="text"
           name="numero"
+          inputMode="numeric"
+          pattern="[0-9]*"
+          autoComplete="tel"
           value={form.numero}
-          onChange={handleChange('numero')}
-          placeholder="+58 xxx xxxx-xxxx"
+          onChange={handleNumeroChange}
+          placeholder="Ejemplo: 1234567890"
         />
         {errors.numero && <span className="field-error">{errors.numero}</span>}
       </label>
