@@ -15,5 +15,6 @@
   --photo-sm: 48px;
   --photo-md: 64px;
   --photo-lg: 96px;
+  --photo-max: 400px;
   --header-height: 64px;
 }

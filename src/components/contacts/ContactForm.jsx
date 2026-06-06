@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { contactShape } from '../../models/contactPropTypes';
-import { ApodosInput } from './ApodosInput';
+import { enforcePhotoLimits } from '../../services/imageService';
 import { ContactPhotoField } from './ContactPhotoField';
 
 const emptyForm = {
@@ -69,11 +69,15 @@ export function ContactForm({
     setErrors((prev) => ({ ...prev, [field]: undefined }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
     try {
-      onSubmit(form);
+      const payload = { ...form };
+      if (payload.foto) {
+        payload.foto = await enforcePhotoLimits(payload.foto);
+      }
+      onSubmit(payload);
       if (!isEdit) {
         setForm(emptyForm);
         setErrors({});

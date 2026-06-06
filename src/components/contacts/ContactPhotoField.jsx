@@ -2,8 +2,8 @@ import { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import ReactCrop, { centerCrop, makeAspectCrop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
-import { PHOTO_ASPECT } from '../../config/image.config';
-import { cropImageToDataUrl, validateImageFile } from '../../services/imageService';
+import { MAX_PHOTO_HEIGHT, MAX_PHOTO_WIDTH, PHOTO_ASPECT } from '../../config/image.config';
+import { cropImageToDataUrl, readImageDimensions, validateImageFile } from '../../services/imageService';
 import { ContactPhoto } from './ContactPhoto';
 
 function buildCrop(mediaWidth, mediaHeight) {
@@ -25,7 +25,7 @@ export function ContactPhotoField({ value, onChange }) {
   const [crop, setCrop] = useState();
   const [error, setError] = useState('');
 
-  const handleFile = (e) => {
+  const handleFile = async (e) => {
     const file = e.target.files?.[0];
     e.target.value = '';
     if (!file) return;
@@ -36,7 +36,18 @@ export function ContactPhotoField({ value, onChange }) {
       return;
     }
 
-    setError('');
+    try {
+      const { width, height } = await readImageDimensions(file);
+      if (width > MAX_PHOTO_WIDTH || height > MAX_PHOTO_HEIGHT) {
+        setError(`La imagen (${width}×${height}) se recortará al guardar (máx. ${MAX_PHOTO_WIDTH}×${MAX_PHOTO_HEIGHT}).`);
+      } else {
+        setError('');
+      }
+    } catch {
+      setError('No se pudo leer la imagen.');
+      return;
+    }
+
     if (cropSrc) URL.revokeObjectURL(cropSrc);
     setCropSrc(URL.createObjectURL(file));
     setCrop(undefined);
