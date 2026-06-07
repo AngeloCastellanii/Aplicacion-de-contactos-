@@ -10,6 +10,7 @@ import { STORAGE_KEYS } from '../config/storage.keys';
 import { useContacts } from '../hooks/useContacts';
 import { useViewVariant } from '../hooks/useViewVariant';
 import { filterAndSortContacts, SORT_OPTIONS } from '../utils/contactFilters';
+import { buildContactOrderMap, withContactOrder } from '../utils/contactOrder';
 
 function readSortPreference() {
   try {
@@ -25,23 +26,24 @@ export function ContactsPage() {
   const { variant } = useViewVariant();
   const location = useLocation();
   const [selectedContact, setSelectedContact] = useState(null);
-  const [notice, setNotice] = useState('');
+  const [notice, setNotice] = useState(() => location.state?.notice ?? '');
   const [query, setQuery] = useState('');
   const [sortBy, setSortBy] = useState(readSortPreference);
 
-  const displayedContacts = useMemo(
-    () => filterAndSortContacts(contacts, query, sortBy),
-    [contacts, query, sortBy],
-  );
+  const orderMap = useMemo(() => buildContactOrderMap(contacts), [contacts]);
+
+  const displayedContacts = useMemo(() => {
+    const filtered = filterAndSortContacts(contacts, query, sortBy);
+    return withContactOrder(filtered, orderMap);
+  }, [contacts, query, sortBy, orderMap]);
+
+  const selectedWithOrder = useMemo(() => {
+    if (!selectedContact) return null;
+    const orden = orderMap.get(selectedContact.id);
+    return orden != null ? { ...selectedContact, orden } : selectedContact;
+  }, [selectedContact, orderMap]);
 
   const hasActiveFilter = query.trim().length > 0;
-
-  useEffect(() => {
-    if (location.state?.notice) {
-      setNotice(location.state.notice);
-      window.history.replaceState({}, document.title);
-    }
-  }, [location.state]);
 
   useEffect(() => {
     if (!notice) return undefined;
@@ -74,7 +76,7 @@ export function ContactsPage() {
         <section className="page-hero">
           <div className="page-hero__content">
             <h1>Mis contactos</h1>
-            <p>Gestiona tu agenda personal. Haz clic en un contacto para ver el detalle.</p>
+            <p>Gestiona tus contactps . Haz clic en un contacto para ver el detalle.</p>
             <div className="page-hero__stats">
               <span className="stat-pill">
                 <strong>{contacts.length}</strong> guardados
@@ -120,7 +122,7 @@ export function ContactsPage() {
       </main>
 
       <ContactDetailModal
-        contact={selectedContact}
+        contact={selectedWithOrder}
         onClose={() => setSelectedContact(null)}
         onDelete={deleteContact}
       />

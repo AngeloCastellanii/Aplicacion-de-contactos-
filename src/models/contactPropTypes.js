@@ -10,4 +10,5 @@ export const contactShape = PropTypes.shape({
   apodos: PropTypes.arrayOf(PropTypes.string),
   creadoEn: PropTypes.string.isRequired,
   actualizadoEn: PropTypes.string.isRequired,
+  orden: PropTypes.number,
 });

@@ -20,6 +20,11 @@ export function ContactCardShell({ contact, onSelect, className, children }) {
       role="button"
       aria-label={`Ver detalle de ${fullName}`}
     >
+      {contact.orden != null && (
+        <span className="contact-card__order" aria-hidden="true">
+          {contact.orden}
+        </span>
+      )}
       {children}
     </article>
   );

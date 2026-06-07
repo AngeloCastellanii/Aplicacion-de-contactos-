@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { contactShape } from '../../models/contactPropTypes';
 import { Modal } from '../common/Modal';
 import { ContactPhoto } from './ContactPhoto';
+import { ApodosList } from './ApodosList';
 
 function formatDate(iso) {
   return new Date(iso).toLocaleString('es-ES', {
@@ -30,7 +31,11 @@ export function ContactDetailModal({ contact, onClose, onDelete }) {
 
         <dl className="contact-detail__fields">
           <div className="contact-detail__row">
-            <dt>Número</dt>
+            <dt>Nº contacto</dt>
+            <dd>{contact.orden}</dd>
+          </div>
+          <div className="contact-detail__row">
+            <dt>Teléfono</dt>
             <dd>{contact.numero}</dd>
           </div>
           <div className="contact-detail__row">
@@ -44,15 +49,7 @@ export function ContactDetailModal({ contact, onClose, onDelete }) {
           <div className="contact-detail__row">
             <dt>Apodos</dt>
             <dd>
-              {contact.apodos?.length > 0 ? (
-                <ul className="contact-detail__apodos">
-                  {contact.apodos.map((a) => (
-                    <li key={a}>{a}</li>
-                  ))}
-                </ul>
-              ) : (
-                <span className="contact-detail__empty">Sin apodos</span>
-              )}
+              <ApodosList apodos={contact.apodos} />
             </dd>
           </div>
           <div className="contact-detail__row">

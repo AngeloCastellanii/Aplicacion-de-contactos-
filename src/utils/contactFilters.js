@@ -10,7 +10,7 @@ export function matchesQuery(contact, query) {
   if (!q) return true;
 
   const fullName = `${contact.nombre} ${contact.apellido}`.toLowerCase();
-  const numero = contact.numero.toLowerCase();
+  const numero = (contact.numero ?? '').toLowerCase();
   const notas = (contact.notas ?? '').toLowerCase();
   const apodos = (contact.apodos ?? []).some((a) => a.toLowerCase().includes(q));
 

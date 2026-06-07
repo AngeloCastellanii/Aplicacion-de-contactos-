@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { contactShape } from '../../models/contactPropTypes';
+import { MAX_NAME_LENGTH, MAX_SURNAME_LENGTH } from '../../config/contact.config';
 import { enforcePhotoLimits } from '../../services/imageService';
+import { ApodosInput } from './ApodosInput';
 import { ContactPhotoField } from './ContactPhotoField';
 
 const emptyForm = {
@@ -15,14 +17,22 @@ const emptyForm = {
 };
 
 function sanitizeNumero(value) {
-  return value.replace(/\D/g, '');
+  const hasPlus = value.startsWith('+');
+  const digits = value.replace(/\D/g, '');
+  return hasPlus ? `+${digits}` : digits;
+}
+
+const NAME_PATTERN = /[^\p{L}\s]/gu;
+
+function sanitizeName(value, maxLength) {
+  return value.replace(NAME_PATTERN, '').slice(0, maxLength);
 }
 
 function toFormValues(contact) {
   return {
     numero: sanitizeNumero(contact.numero ?? ''),
-    nombre: contact.nombre,
-    apellido: contact.apellido,
+    nombre: sanitizeName(contact.nombre ?? '', MAX_NAME_LENGTH),
+    apellido: sanitizeName(contact.apellido ?? '', MAX_SURNAME_LENGTH),
     notas: contact.notas ?? '',
     apodos: contact.apodos ?? [],
     foto: contact.foto ?? null,
@@ -45,15 +55,24 @@ export function ContactForm({
   const validate = () => {
     const next = {};
     if (!form.numero) next.numero = 'El número es obligatorio.';
-    else if (!/^\d+$/.test(form.numero)) {
-      next.numero = 'El número debe contener solo dígitos y empezar con un número.';
-    } else if (form.numero.length < 6 || form.numero.length > 15) {
-      next.numero = 'El número debe tener entre 6 y 15 dígitos.';
+    else if (!/^\+?\d+$/.test(form.numero)) {
+      next.numero = 'El número solo puede contener dígitos; + solo al inicio.';
+    } else {
+      const digitCount = form.numero.replace(/\D/g, '').length;
+      if (digitCount < 6 || digitCount > 15) {
+        next.numero = 'El número debe tener entre 6 y 15 dígitos.';
+      }
     }
     if (!form.nombre.trim() || form.nombre.trim().length < 2) {
       next.nombre = 'El nombre debe tener al menos 2 caracteres.';
+    } else if (form.nombre.length > MAX_NAME_LENGTH) {
+      next.nombre = `El nombre no puede superar ${MAX_NAME_LENGTH} caracteres.`;
     }
-    if (!form.apellido.trim()) next.apellido = 'El apellido es obligatorio.';
+    if (!form.apellido.trim()) {
+      next.apellido = 'El apellido es obligatorio.';
+    } else if (form.apellido.length > MAX_SURNAME_LENGTH) {
+      next.apellido = `El apellido no puede superar ${MAX_SURNAME_LENGTH} caracteres.`;
+    }
     if (form.notas.length > 500) next.notas = 'Las notas no pueden superar 500 caracteres.';
     setErrors(next);
     return Object.keys(next).length === 0;
@@ -62,6 +81,11 @@ export function ContactForm({
   const handleNumeroChange = (e) => {
     setForm((prev) => ({ ...prev, numero: sanitizeNumero(e.target.value) }));
     setErrors((prev) => ({ ...prev, numero: undefined }));
+  };
+
+  const handleNameChange = (field, maxLength) => (e) => {
+    setForm((prev) => ({ ...prev, [field]: sanitizeName(e.target.value, maxLength) }));
+    setErrors((prev) => ({ ...prev, [field]: undefined }));
   };
 
   const handleChange = (field) => (e) => {
@@ -92,12 +116,11 @@ export function ContactForm({
       <h2>{title}</h2>
 
       <label className="field">
-        <span>Número</span>
+        <span>Teléfono</span>
         <input
           type="text"
           name="numero"
-          inputMode="numeric"
-          pattern="[0-9]*"
+          inputMode="tel"
           autoComplete="tel"
           value={form.numero}
           onChange={handleNumeroChange}
@@ -113,7 +136,8 @@ export function ContactForm({
             type="text"
             name="nombre"
             value={form.nombre}
-            onChange={handleChange('nombre')}
+            maxLength={MAX_NAME_LENGTH}
+            onChange={handleNameChange('nombre', MAX_NAME_LENGTH)}
           />
           {errors.nombre && <span className="field-error">{errors.nombre}</span>}
         </label>
@@ -124,7 +148,8 @@ export function ContactForm({
             type="text"
             name="apellido"
             value={form.apellido}
-            onChange={handleChange('apellido')}
+            maxLength={MAX_SURNAME_LENGTH}
+            onChange={handleNameChange('apellido', MAX_SURNAME_LENGTH)}
           />
           {errors.apellido && <span className="field-error">{errors.apellido}</span>}
         </label>

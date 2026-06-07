@@ -350,6 +350,7 @@ a {
   align-items: center;
   text-align: center;
   padding: 1.25rem 1rem;
+  width: 100%;
 }
 
 .contact-card--grid .contact-card__name {
@@ -449,6 +450,7 @@ a {
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   transition: border-color 0.15s, transform 0.15s;
+  min-width: 0;
 }
 
 .contact-card__body {
@@ -459,6 +461,11 @@ a {
 .contact-card__name {
   margin: 0 0 0.15rem;
   font-size: 1.1rem;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .contact-card__nickname {
@@ -551,12 +558,14 @@ a {
 .field input,
 .field textarea {
   width: 100%;
+  min-width: 0;
   padding: 0.6rem 0.75rem;
   border-radius: 8px;
   border: 1px solid var(--color-border);
   background: var(--color-bg);
   color: var(--color-text);
   font: inherit;
+  box-sizing: border-box;
 }
 
 .field input:focus-visible,
@@ -589,6 +598,11 @@ a {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
+  min-width: 0;
+}
+
+.field-row .field {
+  min-width: 0;
 }
 
 @media (max-width: 500px) {
@@ -736,8 +750,25 @@ a {
 }
 
 .contact-card--clickable {
+  position: relative;
   cursor: pointer;
   transition: border-color 0.15s, transform 0.15s;
+}
+
+.contact-card__order {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  min-width: 1.5rem;
+  padding: 0.15rem 0.4rem;
+  background: var(--color-primary);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 999px;
+  text-align: center;
+  line-height: 1.2;
+  z-index: 1;
 }
 
 .contact-card--clickable:hover {
@@ -783,6 +814,10 @@ a {
 .modal__header h2 {
   margin: 0;
   font-size: 1.25rem;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .modal__close {
@@ -835,11 +870,44 @@ a {
 
 .contact-detail__row dd {
   margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .contact-detail__apodos {
   margin: 0;
   padding-left: 1.1rem;
+}
+
+.apodos-list__items {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.apodos-list__items--collapsed {
+  max-height: 5.5rem;
+  overflow: hidden;
+}
+
+.apodos-list__toggle {
+  margin-top: 0.35rem;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--color-primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.apodos-list__toggle:hover {
+  text-decoration: underline;
+}
+
+.apodos-tags .apodos-list__toggle {
+  display: block;
+  margin-top: 0.25rem;
 }
 
 .contact-detail__notes {
